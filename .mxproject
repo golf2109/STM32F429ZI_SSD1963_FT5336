@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=H:/!STM32/!_F0_F1_F2_F3_F4/F4/STM32F429ZI_SSD1963_FMC_0/Inc
+HeaderPath=H:/!STM32/!_F0_F1_F2_F3_F4/F4/STM32F429ZI_SSD1963_FMC_1/Inc
 HeaderFiles=stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;
-SourcePath=H:/!STM32/!_F0_F1_F2_F3_F4/F4/STM32F429ZI_SSD1963_FMC_0/Src
+SourcePath=H:/!STM32/!_F0_F1_F2_F3_F4/F4/STM32F429ZI_SSD1963_FMC_1/Src
 SourceFiles=stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

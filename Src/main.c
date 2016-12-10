@@ -330,14 +330,8 @@ int main(void)
   MX_FMC_Init();
 
   /* USER CODE BEGIN 2 */
-HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_SET);
-HAL_Delay(100);  
 Initial_SSD1963();  
-	for (uint32_t i = 0; i < (800 * 480); i++)
-		{
-			Lcd_Write_Data(0x001f);
-      
-		}    
+  
 //read_reg[0] = Lcd_Read_Reg(0xb1);    
 //read_reg[1] = Lcd_Read_Data();   
 //read_reg[2] = Lcd_Read_Data();
@@ -360,14 +354,14 @@ Initial_SSD1963();
 //for(uint16_t i=0; i <= 0xfffc; i++){
 //Lcd_Clear(i);
   
-//	uint32_t i;
-////	Lcd_Write_Index(0x002C);
-//	for (i = 0; i < (800 * 480); i++)
-//		{
-//			Lcd_Write_Data(0x001f);
-//      
-//		}  
-// HAL_Delay(1);  
+	uint32_t i;
+//	Lcd_Write_Index(0x002C);
+	for (i = 0; i < (800 * 480); i++)
+		{
+			Lcd_Write_Data(0x001f);
+      
+		}  
+ HAL_Delay(100);  
 ////	for (i = 0; i < (800 * 480); i++)
 ////		{
 ////			Lcd_Write_Data(0xf81f);
