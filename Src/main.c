@@ -35,56 +35,24 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-#include "display.h"
-#include "ssd1963.h"
-
-
-////typedef struct
-////{
-////  volatile uint16_t LCD_REG;
-////  volatile uint16_t LCD_RAM;
-////} LCD_TypeDef;
-
-//////I have connected FSMC_A17 to the SSD1963 RS, and FSMC_NE1 to SSD1963 CS.
-//////After reading up a bit, I calculated the FSMC address as:
-//////#define LCD_BASE           ((uint32_t)(0x60000000 | ((0UL << 27) | (0UL << 26))) | (1UL << 17))
-
-//////// Note: LCD /CS is NE1 - Bank 1 of NOR/SRAM Bank 1~4
-//////#define LCD_BASE           ((uint32_t)(0x60000000 | 0x0001fffE))
-//#define LCD                ((LCD_TypeDef *) LCD_BASE)
-
-
-//////Мы помним, что с точки зрения кода, обращение к FSMC будет простой записью/чтением из памяти, 
-//////поэтому нам нужно определить по каким именно адресам обращаться. Смотрим в референс мануал на STM32,
-//////раздел FSMC, и видим, что для NOR/SRAM выделены адреса, начинающиеся с 0x60000000.
-//////Под банками в широком смысле в мануале подразумеваются большие регионы, выделенные для устройств разного типа, 
-//////так, банк #1 – это NOR/SRAM, банки #2 и #3 – NAND, банк #4- PC Card.
-//////В свою очередь банк #1 может быть использован для доступа к целым 4 чипам памяти, 
-//////каждый из которых может независимо от других быть NOR либо SRAM. Так как дисплей 
-//////подключен как NE1, нас интересует банк, объявленный как FSMC_Bank1_NORSRAM1. 
-//////Исходя из базового адреса, можно сразу же записать определение 
-//////#define LCDMemory		(*((volatile uint16_t*) 0x60020000))
-
-////     #define LCD_BASE        (0x60000000UL | 0x0C000000UL)
-////     #define LCD_REG16  (*((volatile U16 *)(LCD_BASE  ))) 
-////     #define LCD_DAT16  (*((volatile U16 *)(LCD_BASE+2)))
-
-//extern const unsigned char simbols [];
-//void Lcd_Write_Index(uint16_t index);
-//void Lcd_Write_Data(uint16_t data);
-//void Lcd_Write_Reg(uint16_t lcd_reg, uint16_t lcd_data);
-//uint16_t Lcd_Read_Reg(uint16_t reg_addr);
-
-uint16_t read_reg[10];
-uint16_t lcd_id;
+#include "display_ssd1963.h"
+#include "touch.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c3;
+
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+uint8_t MasterTX[5] = {1,2,3,4,5};
+uint8_t SlaveRX[5];
+uint8_t str[200];
+uint8_t touch_receive[0x32];
+uint16_t touch_adr;
+uint16_t x_pos[5],y_pos[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,69 +60,12 @@ void SystemClock_Config(void);
 void Error_Handler(void);
 static void MX_GPIO_Init(void);
 static void MX_FMC_Init(void);
+static void MX_I2C1_Init(void);
+static void MX_I2C3_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-//////// Запись в регистр LCD
-//////void FSMC_LcdWriteReg ( uint8_t LCD_Reg, uint16_t LCD_RegValue )
-//////{
-//////	// Write 16-bit Index, then Write Reg
-//////	LCD->LCD_REG = LCD_Reg;
-//////	// Write 16-bit Reg
-//////	LCD->LCD_RAM = LCD_RegValue;
-//////} // FSMC_LcdWriteReg
-
-//////// Чтение регистра LCD
-//////uint16_t FSMC_LcdReadReg ( uint8_t LCD_Reg )
-//////{
-//////	// Write 16-bit Index (then Read Reg)
-//////	LCD->LCD_REG = LCD_Reg;
-//////	// Read 16-bit Reg
-//////	return (LCD->LCD_RAM);
-//////} // FSMC_LcdReadReg
-
-//////// Запись команды в LCD
-//////void FSMC_LcdWriteCmd ( uint16_t val )
-//////{
-//////	// Write 16-bit Index (then Read Reg)
-//////	LCD->LCD_REG = val;
-//////} // FSMC_LcdWriteCmd
-
-//////// чтение команды из LCD
-//////uint16_t FSMC_LcdReadCmd ( void )
-//////{
-//////	return (LCD->LCD_REG);
-//////} // FSMC_LcdWriteCmd
-
-//////// чтение данных из LCD
-//////uint16_t FSMC_LcdReadData ( void )
-//////{
-//////	return (LCD->LCD_RAM);
-//////} // FSMC_LcdWriteCmd
-
-//////// Запись данных в LCD
-//////void FSMC_LcdWriteData ( uint16_t val )
-//////{
-//////	// Write 16-bit Reg
-//////	LCD->LCD_RAM = val;
-//////} // FSMC_LcdWriteData
-
-/////////////////////////////////////
-//ф-циЯ рисует id дисплеЯ заданным цветом на выбранном фоне, в указанную позицию
-/*void Get_Lcd_Id(uint16_t x, uint16_t y,uint16_t color, uint16_t phone, uint8_t size)
-{
-	 uint16_t data = 0;
-	 uint8_t id [4] = {0};
-	
-	data = Lcd_Read_Reg(0x00);
-	itoa( data, (char*) id, 16); //преобразуем число в строку длЯ вывода на дисплей
-	for (uint8_t k = 0; k < 4; k++)
-	{
-		Draw_Simbol(x ,y + 8*k*size,color,phone, &simbols[(id[k]-0x20)*8],size);
-	}
-}*/
-///////////////////////////////////
-
+//void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c);
 
 
 /* USER CODE END PFP */
@@ -181,64 +92,77 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_FMC_Init();
+  MX_I2C1_Init();
+  
+  MX_I2C3_Init();
 
   /* USER CODE BEGIN 2 */
- HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_SET);
-HAL_Delay(100); 
-Initial_SSD1963();  
-//SSD1963_Init();
   
-  for(uint32_t index_clr=0;index_clr < 800*480;index_clr++)
-	{ 			// цикл с количеством итераций 320*240
-    	Lcd_Write_Data(black); 	// ставим точки заданного цвета
- 	}  
-//read_reg[0] = Lcd_Read_Reg(0xb1);    
-//read_reg[1] = Lcd_Read_Data();   
-//read_reg[2] = Lcd_Read_Data();
-//read_reg[3] = Lcd_Read_Data();
-//read_reg[4] = Lcd_Read_Data();
-//read_reg[5] = Lcd_Read_Data();
-//read_reg[6] = Lcd_Read_Data();    
-//read_reg[7] = Lcd_Read_Data();      
+//  HAL_I2C_Slave_Receive(&hi2c3, SlaveRX,SIZE,100);
 
-//SSD1963_ClearScreen(green);
-  for(uint32_t index_set=0;index_set < 100;index_set++)  {
-GLCD_SetPixel(index_set, index_set, green);
-  }
-//////uint32_t i;
-//////Lcd_Write_Index(0x003C);
-//////for (i = 0; i < (800 * 480); i++)
-//////  {
-//////    Lcd_Write_Data(i);      
-//////  }  
-//////HAL_Delay(100); 
-  /* USER CODE END 2 */
+  HAL_GPIO_WritePin(CTP_WAKE_GPIO_Port, CTP_WAKE_Pin,GPIO_PIN_SET);  
+  HAL_GPIO_WritePin(CTP_RST_GPIO_Port, CTP_RST_Pin,GPIO_PIN_RESET);  
+  HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_RESET);
+  HAL_Delay(500); 
+  HAL_GPIO_WritePin(CTP_RST_GPIO_Port, CTP_RST_Pin,GPIO_PIN_SET);  
+  HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_SET);
+  HAL_Delay(100);  
+  Init_SSD1963();  
+  for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
+    Lcd_Write_Data(BLACK); 	//setbuf color pixel
+ 	}
+  Lcd_ClearScreen(BLUE);
+//  for(uint32_t index_set=0;index_set < 100;index_set++){
+//    Lcd_SetPixel(index_set, index_set, green);
+//  }  
+//  Lcd_FillArea(100, 150, 100, 150, white);
+//	TFT_Draw_Char(500,100,RED,BLACK,(const uint8_t*) font8x8,'5',3);
+//	TFT_Draw_Char(500,200,GREEN,BLACK,(const uint8_t*) font8x8,'b',3);
+//	TFT_Draw_Char(200,300,GREEN,BLACK,(const uint8_t*) font8x8,'5',3);  
 
-  /* Infinite loop */
+	TFT_Draw_String(230, 220, YELLOW, BLUE,(const uint8_t*) font8x8, "SLAVA UKRAINI",4);  
+
+//ф-ция рисует окружность нужного радиуса, линией задданой толщины и выбранным цветом, также возможно 
+//залить окружность нужным цветом для этого установить аргумент fill равным единице, иначе ноль
+//void TFT_Draw_Circle(uint16_t x, uint16_t y, uint8_t radius, uint8_t fill, uint8_t size, uint16_t color);
+//TFT_Draw_Circle(200, 200, 50, 0, 0 , green); 
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//////	Lcd_Write_Index(0x003C);
-//////	for (i = 0; i < (800 * 480); i++)
-//////		{
-//////			Lcd_Write_Data(i);      
-//////		} 
+y_pos[0]=800*(256*(0x0F & (touch_receive[3])) + touch_receive[4])/1791;
+x_pos[0]=480*(256*(0x0F & (touch_receive[5])) + touch_receive[6])/1024;    
+
+////y_pos[1]=256*(0x0F & (touch_receive[9]))+touch_receive[0xa];
+////x_pos[1]=256*(0x0F & (touch_receive[0xb]))+touch_receive[0xc];
+////    
+////y_pos[2]=256*(0x0F & (touch_receive[0x0d]))+touch_receive[0x0e];
+////x_pos[2]=256*(0x0F & (touch_receive[0x0f]))+touch_receive[0x11];    
+////    
+////y_pos[3]=256*(0x0F & (touch_receive[0x12]))+touch_receive[0x13];
+////x_pos[3]=256*(0x0F & (touch_receive[0x14]))+touch_receive[0x15];
+
+////y_pos[4]=256*(0x0F & (touch_receive[0x16]))+touch_receive[0x17];
+////x_pos[4]=256*(0x0F & (touch_receive[0x18]))+touch_receive[0x19];   
+   if((x_pos[0] > 8 ) && (y_pos[0] >8)){
+TFT_Draw_Circle(y_pos[0], x_pos[0], 8, 1, 1 , GREEN);    
+  }
+////////MasterTX[0]=0x00;
+////////MasterTX[1]=0x01;
+////////MasterTX[2]=0x02;
+////////MasterTX[3]=0x03;    
+//////////touch_adr = HAL_I2C_Master_Receive(&hi2c1, 0x6e, touch_receive, 0x03, 1);   
+//////////HAL_Delay(1);    
+////////touch_adr = HAL_I2C_Master_Transmit(&hi2c1, 0x70, MasterTX, 0x01, 1);   
+//////////HAL_Delay(1);   
+//////////for(uint8_t ttt=0; ttt<0x1F;ttt++){
+////////touch_adr = HAL_I2C_Master_Receive(&hi2c1, 0x71, touch_receive, 0x30, 1);   
+////////HAL_Delay(10);      
+
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-//Initial_SSD1963();  
-//for(uint16_t i=0; i <= 0xfffc; i++){
-//Lcd_Clear(i);
-  
- 
-////	for (i = 0; i < (800 * 480); i++)
-////		{
-////			Lcd_Write_Data(0xf81f);
-////		}   
-////HAL_Delay(100); 
-}    
-   
-//  }
+
+  }
   /* USER CODE END 3 */
 
 }
@@ -305,6 +229,45 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
+/* I2C1 init function */
+static void MX_I2C1_Init(void)
+{
+
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+}
+
+/* I2C3 init function */
+static void MX_I2C3_Init(void)
+{
+
+  hi2c3.Instance = I2C3;
+  hi2c3.Init.ClockSpeed = 100000;
+  hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c3.Init.OwnAddress1 = 222;
+  hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c3.Init.OwnAddress2 = 0;
+  hi2c3.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c3.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+}
 /* FMC initialization function */
 static void MX_FMC_Init(void)
 {
@@ -331,12 +294,12 @@ static void MX_FMC_Init(void)
   hsram1.Init.ContinuousClock = FMC_CONTINUOUS_CLOCK_SYNC_ONLY;
   hsram1.Init.PageSize = FMC_PAGE_SIZE_NONE;
   /* Timing */
-  Timing.AddressSetupTime = 15;
-  Timing.AddressHoldTime = 15;
-  Timing.DataSetupTime = 255;
-  Timing.BusTurnAroundDuration = 15;
-  Timing.CLKDivision = 16;
-  Timing.DataLatency = 17;
+  Timing.AddressSetupTime = 5;
+  Timing.AddressHoldTime = 5;
+  Timing.DataSetupTime = 5;
+  Timing.BusTurnAroundDuration = 5;
+  Timing.CLKDivision = 1;
+  Timing.DataLatency = 5;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
   /* ExtTiming */
 
@@ -362,19 +325,41 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, CTP_WAKE_Pin|CTP_RST_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pins : CTP_WAKE_Pin CTP_RST_Pin */
+  GPIO_InitStruct.Pin = CTP_WAKE_Pin|CTP_RST_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : CTP_INT_Pin */
+  GPIO_InitStruct.Pin = CTP_INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(CTP_INT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : Reset_LCD_Pin */
   GPIO_InitStruct.Pin = Reset_LCD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(Reset_LCD_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 

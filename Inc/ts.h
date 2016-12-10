@@ -1,10 +1,14 @@
 /**
   ******************************************************************************
-  * File Name          : main.h
-  * Description        : This file contains the common defines of the application
+  * @file    ts.h
+  * @author  MCD Application Team
+  * @version V4.0.1
+  * @date    21-July-2015
+  * @brief   This file contains all the functions prototypes for the Touch Screen driver.
   ******************************************************************************
+  * @attention
   *
-  * COPYRIGHT(c) 2016 STMicroelectronics
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -30,36 +34,74 @@
   *
   ******************************************************************************
   */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
+#ifndef __TS_H
+#define __TS_H
 
-/* USER CODE BEGIN Includes */
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
-/* USER CODE END Includes */
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h> 
 
-/* Private define ------------------------------------------------------------*/
+/** @addtogroup BSP
+  * @{
+  */
 
-#define CTP_WAKE_Pin GPIO_PIN_10
-#define CTP_WAKE_GPIO_Port GPIOB
-#define CTP_RST_Pin GPIO_PIN_11
-#define CTP_RST_GPIO_Port GPIOB
-#define CTP_INT_Pin GPIO_PIN_13
-#define CTP_INT_GPIO_Port GPIOD
-#define Reset_LCD_Pin GPIO_PIN_9
-#define Reset_LCD_GPIO_Port GPIOG
-/* USER CODE BEGIN Private defines */
+/** @addtogroup Components
+  * @{
+  */
+    
+/** @addtogroup TS
+  * @{
+  */
 
-/* USER CODE END Private defines */
+/** @defgroup TS_Exported_Types
+  * @{
+  */
+
+/** @defgroup TS_Driver_structure  Touch Sensor Driver structure
+  * @{
+  */
+typedef struct
+{  
+  void       (*Init)(uint16_t);
+  uint16_t   (*ReadID)(uint16_t);
+  void       (*Reset)(uint16_t);
+  void       (*Start)(uint16_t);
+  uint8_t    (*DetectTouch)(uint16_t);
+  void       (*GetXY)(uint16_t, uint16_t*, uint16_t*);
+  void       (*EnableIT)(uint16_t);
+  void       (*ClearIT)(uint16_t);
+  uint8_t    (*GetITStatus)(uint16_t);
+  void       (*DisableIT)(uint16_t);
+}TS_DrvTypeDef;
+/**
+  * @}
+  */
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-*/ 
+  */
 
-#endif /* __MAIN_H */
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __TS_H */
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

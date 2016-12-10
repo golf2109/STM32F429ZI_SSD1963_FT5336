@@ -1,1 +1,0 @@
-stm32f429zi_ssd1963_fmc\startup_stm32f429xx.o: startup_stm32f429xx.s

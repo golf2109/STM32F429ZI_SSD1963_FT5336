@@ -36,10 +36,14 @@
 #include "stm32f4xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+extern uint8_t MasterTX[5];
+extern uint16_t touch_adr;
+extern uint8_t touch_receive[0x32];
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c3;
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
@@ -182,6 +186,92 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
+
+/**
+* @brief This function handles PVD interrupt through EXTI line 16.
+*/
+void PVD_IRQHandler(void)
+{
+  /* USER CODE BEGIN PVD_IRQn 0 */
+
+  /* USER CODE END PVD_IRQn 0 */
+  HAL_PWR_PVD_IRQHandler();
+  /* USER CODE BEGIN PVD_IRQn 1 */
+
+  /* USER CODE END PVD_IRQn 1 */
+}
+
+/**
+* @brief This function handles I2C1 event interrupt.
+*/
+void I2C1_EV_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_EV_IRQn 0 */
+
+  /* USER CODE END I2C1_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_EV_IRQn 1 */
+
+  /* USER CODE END I2C1_EV_IRQn 1 */
+}
+
+/**
+* @brief This function handles I2C1 error interrupt.
+*/
+void I2C1_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+
+  /* USER CODE END I2C1_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_ER_IRQn 1 */
+
+  /* USER CODE END I2C1_ER_IRQn 1 */
+}
+
+/**
+* @brief This function handles EXTI line[15:10] interrupts.
+*/
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+MasterTX[0]=0x00;
+touch_adr = HAL_I2C_Master_Transmit(&hi2c1, 0x70, MasterTX, 0x01, 1);   
+touch_adr = HAL_I2C_Master_Receive(&hi2c1, 0x71, touch_receive, 0x30, 1);   
+  /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
+* @brief This function handles I2C3 event interrupt.
+*/
+void I2C3_EV_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C3_EV_IRQn 0 */
+
+  /* USER CODE END I2C3_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c3);
+  /* USER CODE BEGIN I2C3_EV_IRQn 1 */
+
+  /* USER CODE END I2C3_EV_IRQn 1 */
+}
+
+/**
+* @brief This function handles I2C3 error interrupt.
+*/
+void I2C3_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C3_ER_IRQn 0 */
+
+  /* USER CODE END I2C3_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c3);
+  /* USER CODE BEGIN I2C3_ER_IRQn 1 */
+
+  /* USER CODE END I2C3_ER_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 
