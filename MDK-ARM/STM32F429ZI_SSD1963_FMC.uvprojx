@@ -335,7 +335,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;    ../Drivers/STM32F4xx_HAL_Driver/Inc;    ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;    ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;    ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -405,14 +405,44 @@
               <FilePath>../Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
             <File>
-              <FileName>display_ssd1963.c</FileName>
+              <FileName>display.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\display_ssd1963.c</FilePath>
+              <FilePath>..\Src\display.c</FilePath>
             </File>
             <File>
-              <FileName>display_ssd1963.h</FileName>
+              <FileName>display.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\Inc\display_ssd1963.h</FilePath>
+              <FilePath>..\Inc\display.h</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1963.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\ssd1963.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1963.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\ssd1963.h</FilePath>
+            </File>
+            <File>
+              <FileName>NewFont.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\NewFont.h</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1963_fsmc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\ssd1963_fsmc.h</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1963_fsmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\ssd1963_fsmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>font8x8.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\font8x8.c</FilePath>
             </File>
           </Files>
         </Group>

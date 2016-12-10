@@ -35,20 +35,9 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-#define DISP_WIDTH  800
-#define DISP_HEIGHT 480
+#include "display.h"
+#include "ssd1963.h"
 
-#define HDP		(DISP_WIDTH - 1)
-#define HT 		928
-#define HPS		46
-#define LPS		15
-#define HPW		48
-
-#define VDP		(DISP_HEIGHT - 1)
-#define VT		525
-#define VPS		16
-#define FPS		8
-#define VPW		16
 
 ////typedef struct
 ////{
@@ -80,28 +69,11 @@
 ////     #define LCD_REG16  (*((volatile U16 *)(LCD_BASE  ))) 
 ////     #define LCD_DAT16  (*((volatile U16 *)(LCD_BASE+2)))
 
-
-// ќпредел€ем адреса
-// дл€ записи данных
-#define LCD_DATA 0x60020000
-// дл€ записи команд
-#define LCD_REG 0x60000000
-
-#define yellow 	  0x07FF
-#define magneta   0xF81F
-#define cyan      0xFFE0
-#define	red		  	0X001F
-#define	green	  	0X07E0
-#define	blue      0XF800
-#define white     0XFFFF
-#define black     0X3185
-
-
 //extern const unsigned char simbols [];
-void Lcd_Write_Index(uint16_t index);
-void Lcd_Write_Data(uint16_t data);
-void Lcd_Write_Reg(uint16_t lcd_reg, uint16_t lcd_data);
-uint16_t Lcd_Read_Reg(uint16_t reg_addr);
+//void Lcd_Write_Index(uint16_t index);
+//void Lcd_Write_Data(uint16_t data);
+//void Lcd_Write_Reg(uint16_t lcd_reg, uint16_t lcd_data);
+//uint16_t Lcd_Read_Reg(uint16_t reg_addr);
 
 uint16_t read_reg[10];
 uint16_t lcd_id;
@@ -167,59 +139,6 @@ static void MX_FMC_Init(void);
 //////	LCD->LCD_RAM = val;
 //////} // FSMC_LcdWriteData
 
-
-__inline void Lcd_Write_Index(uint16_t index)
-{
-   *(uint16_t *) (LCD_REG) = index;
-}
-////////////////////////
-__inline void Lcd_Write_Data(uint16_t data)
-{
-   *(uint16_t *) (LCD_DATA)= data;
-}
-///////////////////
-uint16_t Lcd_Read_Data()
-{
-   uint16_t data = * (uint16_t *)(LCD_DATA);
-   return data;
-}
-////////////////////////
-uint16_t Lcd_Read_Reg(uint16_t reg_addr)
-{
-   volatile uint16_t data = 0;
-   Lcd_Write_Index(reg_addr);
-   data = Lcd_Read_Data();
-   return data;
-}
-///////////////////////
-void Lcd_Write_Reg(uint16_t reg,uint16_t value)
-{
-   *(uint16_t *) (LCD_REG) = reg;
-   *(uint16_t *) (LCD_DATA) = value;
-}
-
-//////////////////
-//ф-ция выбирает ячейку в видеоОЗУ
-void Set_Cursor(uint16_t x_kur, uint16_t y_kur)
-{	
-	Lcd_Write_Reg(0x004e,x_kur);
-	Lcd_Write_Reg(0x004f,y_kur);
-	Lcd_Write_Index(0x0022);
-
-}
-////////////////////////
-//ф-ция закрашивает экран выбранным цветом
-void Lcd_Clear(uint16_t color)
-{
-	uint32_t index = 0;
-	
-	Set_Cursor(0,0);	
-	
-	  for(index=0;index < 76800;index++)
-	  { 			
-		  Lcd_Write_Data(color);
-	  }
-}
 /////////////////////////////////////
 //ф-ция рисует id дисплея заданным цветом на выбранном фоне, в указанную позицию
 /*void Get_Lcd_Id(uint16_t x, uint16_t y,uint16_t color, uint16_t phone, uint8_t size)
@@ -237,72 +156,6 @@ void Lcd_Clear(uint16_t color)
 ///////////////////////////////////
 
 
-void Initial_SSD1963()
-{
-Lcd_Write_Index(0x01);
-HAL_Delay(10);
-Lcd_Write_Index(0xe0); //START PLL
-Lcd_Write_Data(0x01);
-HAL_Delay(50);
-Lcd_Write_Index(0xe0); //START PLL
-Lcd_Write_Data(0x03);
-HAL_Delay(5);
-Lcd_Write_Index(0xb0);	//LCD SPECIFICATION
-Lcd_Write_Data(0x20);
-Lcd_Write_Data(0x80);
-Lcd_Write_Data(0x03);
-Lcd_Write_Data(0x1f);
-Lcd_Write_Data(0x01);
-Lcd_Write_Data(0xdf);
-Lcd_Write_Data(0x00);
-Lcd_Write_Index(0xf0);
-Lcd_Write_Data(0x03); //pixel data format, 0x03 is 16bit(565 format);0x00 is for 8-bit
-//Set the MN of PLL
-Lcd_Write_Index(0xe2);
-Lcd_Write_Data(0x1d);
-Lcd_Write_Data(0x02);
-Lcd_Write_Data(0x54);
-Lcd_Write_Index(0xe6);
-Lcd_Write_Data(0x04);
-Lcd_Write_Data(0x6f);
-Lcd_Write_Data(0x47);
-//Set front porch and back porch
-Lcd_Write_Index(0xb4);
-Lcd_Write_Data(0x04);
-Lcd_Write_Data(0x20);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x2e);
-Lcd_Write_Data(0xd2);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x00);
-Lcd_Write_Index(0xb6);
-
-Lcd_Write_Data(0x02);
-Lcd_Write_Data(0x0d);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x17);
-Lcd_Write_Data(0x16);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x00);
-Lcd_Write_Index(0x2a);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x03);
-Lcd_Write_Data(0x1f);
-Lcd_Write_Index(0x2b);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x00);
-Lcd_Write_Data(0x01);
-Lcd_Write_Data(0x1f);
-Lcd_Write_Index(0xb8);
-Lcd_Write_Data(0x0f);
-Lcd_Write_Data(0x01);
-Lcd_Write_Index(0xba);
-Lcd_Write_Data(0x01);
-Lcd_Write_Index(0x29);
-Lcd_Write_Index(0x2c);
-}
 
 /* USER CODE END PFP */
 
@@ -330,8 +183,15 @@ int main(void)
   MX_FMC_Init();
 
   /* USER CODE BEGIN 2 */
+ HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_SET);
+HAL_Delay(100); 
 Initial_SSD1963();  
+//SSD1963_Init();
   
+  for(uint32_t index_clr=0;index_clr < 800*480;index_clr++)
+	{ 			// цикл с количеством итераций 320*240
+    	Lcd_Write_Data(black); 	// ставим точки заданного цвета
+ 	}  
 //read_reg[0] = Lcd_Read_Reg(0xb1);    
 //read_reg[1] = Lcd_Read_Data();   
 //read_reg[2] = Lcd_Read_Data();
@@ -340,13 +200,29 @@ Initial_SSD1963();
 //read_reg[5] = Lcd_Read_Data();
 //read_reg[6] = Lcd_Read_Data();    
 //read_reg[7] = Lcd_Read_Data();      
+
+//SSD1963_ClearScreen(green);
+  for(uint32_t index_set=0;index_set < 100;index_set++)  {
+GLCD_SetPixel(index_set, index_set, green);
+  }
+//////uint32_t i;
+//////Lcd_Write_Index(0x003C);
+//////for (i = 0; i < (800 * 480); i++)
+//////  {
+//////    Lcd_Write_Data(i);      
+//////  }  
+//////HAL_Delay(100); 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+//////	Lcd_Write_Index(0x003C);
+//////	for (i = 0; i < (800 * 480); i++)
+//////		{
+//////			Lcd_Write_Data(i);      
+//////		} 
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -354,14 +230,7 @@ Initial_SSD1963();
 //for(uint16_t i=0; i <= 0xfffc; i++){
 //Lcd_Clear(i);
   
-	uint32_t i;
-//	Lcd_Write_Index(0x002C);
-	for (i = 0; i < (800 * 480); i++)
-		{
-			Lcd_Write_Data(0x001f);
-      
-		}  
- HAL_Delay(100);  
+ 
 ////	for (i = 0; i < (800 * 480); i++)
 ////		{
 ////			Lcd_Write_Data(0xf81f);

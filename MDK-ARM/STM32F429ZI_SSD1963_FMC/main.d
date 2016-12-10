@@ -29,3 +29,5 @@ stm32f429zi_ssd1963_fmc\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ha
 stm32f429zi_ssd1963_fmc\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_fmc.h
 stm32f429zi_ssd1963_fmc\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 stm32f429zi_ssd1963_fmc\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+stm32f429zi_ssd1963_fmc\main.o: ../Inc/display.h
+stm32f429zi_ssd1963_fmc\main.o: ../Inc/ssd1963.h
