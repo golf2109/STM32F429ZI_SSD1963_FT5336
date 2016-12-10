@@ -33,6 +33,7 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
+#include "GUI.h"
 
 extern void Error_Handler(void);
 /* USER CODE BEGIN 0 */

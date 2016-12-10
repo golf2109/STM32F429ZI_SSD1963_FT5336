@@ -25,6 +25,10 @@
 "stm32f429zi_fmc_ssd1963\stm32f4xx_hal_i2c_ex.o"
 "stm32f429zi_fmc_ssd1963\stm32f4xx_hal_i2c.o"
 "stm32f429zi_fmc_ssd1963\system_stm32f4xx.o"
+"stm32f429zi_fmc_ssd1963\gui_x.o"
+"stm32f429zi_fmc_ssd1963\guiconf.o"
+"stm32f429zi_fmc_ssd1963\lcdconf_flexcolor.o"
+"..\EmWin\STemWin532_CM4_Keil.lib"
 --library_type=microlib --strict --scatter "STM32F429ZI_FMC_SSD1963\STM32F429ZI_FMC_SSD1963.sct"
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

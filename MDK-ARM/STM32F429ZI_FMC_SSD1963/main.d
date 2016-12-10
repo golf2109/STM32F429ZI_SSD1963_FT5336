@@ -35,3 +35,10 @@ stm32f429zi_fmc_ssd1963\main.o: ../Inc/display_ssd1963.h
 stm32f429zi_fmc_ssd1963\main.o: C:\Keil_v522\ARM\ARMCC\Bin\..\include\stdlib.h
 stm32f429zi_fmc_ssd1963\main.o: ../Inc/touch.h
 stm32f429zi_fmc_ssd1963\main.o: ../Inc/ts.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\GUI.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\GUI_ConfDefaults.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\GUIConf.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\GUI_Type.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\LCD.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\Global.h
+stm32f429zi_fmc_ssd1963\main.o: ..\EmWin\inc\GUI_Version.h

@@ -32,3 +32,10 @@ stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm3
 stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ../Inc/stm32f4xx_it.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\GUI.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\GUI_ConfDefaults.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\GUIConf.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\GUI_Type.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\LCD.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\Global.h
+stm32f429zi_fmc_ssd1963\stm32f4xx_it.o: ..\EmWin\inc\GUI_Version.h

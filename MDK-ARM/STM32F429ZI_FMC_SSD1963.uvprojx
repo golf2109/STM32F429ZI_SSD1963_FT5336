@@ -335,7 +335,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;             ../Drivers/STM32F4xx_HAL_Driver/Inc;             ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;             ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;             ../Drivers/CMSIS/Include;             ..\Src;             ..\Inc</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Src;..\Inc;..\EmWin;..\EmWin\inc;..\EmWin\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -538,6 +538,31 @@
               <FileName>system_stm32f4xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/system_stm32f4xx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>EmWin</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_X.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EmWin\src\GUI_X.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIConf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EmWin\src\GUIConf.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCDConf_FlexColor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EmWin\src\LCDConf_FlexColor.c</FilePath>
+            </File>
+            <File>
+              <FileName>STemWin532_CM4_Keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\EmWin\STemWin532_CM4_Keil.lib</FilePath>
             </File>
           </Files>
         </Group>

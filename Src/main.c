@@ -37,6 +37,7 @@
 /* USER CODE BEGIN Includes */
 #include "display_ssd1963.h"
 #include "touch.h"
+#include "GUI.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -107,7 +108,10 @@ int main(void)
   HAL_GPIO_WritePin(CTP_RST_GPIO_Port, CTP_RST_Pin,GPIO_PIN_SET);  
   HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_SET);
   HAL_Delay(100);  
-  Init_SSD1963();  
+  __HAL_RCC_CRC_CLK_ENABLE();
+//  Init_SSD1963();  
+  GUI_Init();
+  
   for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
     Lcd_Write_Data(BLACK); 	//setbuf color pixel
  	}
