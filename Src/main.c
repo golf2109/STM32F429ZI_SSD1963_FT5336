@@ -38,6 +38,7 @@
 #include "display_ssd1963.h"
 #include "touch.h"
 #include "GUI.h"
+#include "WindowDLG.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -108,10 +109,10 @@ int main(void)
   HAL_GPIO_WritePin(CTP_RST_GPIO_Port, CTP_RST_Pin,GPIO_PIN_SET);  
   HAL_GPIO_WritePin(Reset_LCD_GPIO_Port, Reset_LCD_Pin,GPIO_PIN_SET);
   HAL_Delay(100);  
-  __HAL_RCC_CRC_CLK_ENABLE();
-//  Init_SSD1963();  
+  __HAL_RCC_CRC_CLK_ENABLE();  
+  Init_SSD1963();  
   GUI_Init();
-  
+
   for(uint32_t index_clr=0;index_clr < 800*480;index_clr++){
     Lcd_Write_Data(BLACK); 	//setbuf color pixel
  	}
@@ -124,18 +125,23 @@ int main(void)
 //	TFT_Draw_Char(500,200,GREEN,BLACK,(const uint8_t*) font8x8,'b',3);
 //	TFT_Draw_Char(200,300,GREEN,BLACK,(const uint8_t*) font8x8,'5',3);  
 
-	TFT_Draw_String(230, 220, YELLOW, BLUE,(const uint8_t*) font8x8, "SLAVA UKRAINI",4);  
+//	TFT_Draw_String(230, 220, YELLOW, BLUE,(const uint8_t*) font8x8, "SLAVA UKRAINI",4);  
 
 //ф-ция рисует окружность нужного радиуса, линией задданой толщины и выбранным цветом, также возможно 
 //залить окружность нужным цветом для этого установить аргумент fill равным единице, иначе ноль
 //void TFT_Draw_Circle(uint16_t x, uint16_t y, uint8_t radius, uint8_t fill, uint8_t size, uint16_t color);
 //TFT_Draw_Circle(200, 200, 50, 0, 0 , green); 
   /* USER CODE BEGIN WHILE */
+HAL_Delay(1000);   
+y_pos[0] = 0;
+x_pos[0] = 0;
+  CreateWindow();  
+    GUI_Delay(5000);  
   while (1)
   {
+
 y_pos[0]=800*(256*(0x0F & (touch_receive[3])) + touch_receive[4])/1791;
 x_pos[0]=480*(256*(0x0F & (touch_receive[5])) + touch_receive[6])/1024;    
-
 ////y_pos[1]=256*(0x0F & (touch_receive[9]))+touch_receive[0xa];
 ////x_pos[1]=256*(0x0F & (touch_receive[0xb]))+touch_receive[0xc];
 ////    
@@ -150,6 +156,9 @@ x_pos[0]=480*(256*(0x0F & (touch_receive[5])) + touch_receive[6])/1024;
    if((x_pos[0] > 8 ) && (y_pos[0] >8)){
 TFT_Draw_Circle(y_pos[0], x_pos[0], 8, 1, 1 , GREEN);    
   }
+   else{
+  Lcd_ClearScreen(BLUE);     
+   }
 ////////MasterTX[0]=0x00;
 ////////MasterTX[1]=0x01;
 ////////MasterTX[2]=0x02;
@@ -298,12 +307,12 @@ static void MX_FMC_Init(void)
   hsram1.Init.ContinuousClock = FMC_CONTINUOUS_CLOCK_SYNC_ONLY;
   hsram1.Init.PageSize = FMC_PAGE_SIZE_NONE;
   /* Timing */
-  Timing.AddressSetupTime = 5;
-  Timing.AddressHoldTime = 5;
-  Timing.DataSetupTime = 5;
-  Timing.BusTurnAroundDuration = 5;
-  Timing.CLKDivision = 1;
-  Timing.DataLatency = 5;
+  Timing.AddressSetupTime = 10;
+  Timing.AddressHoldTime = 10;
+  Timing.DataSetupTime = 10;
+  Timing.BusTurnAroundDuration = 10;
+  Timing.CLKDivision = 5;
+  Timing.DataLatency = 10;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
   /* ExtTiming */
 

@@ -2420,7 +2420,7 @@ extern GUI_CONST_STORAGE GUI_FONT GUI_FontComic24B_ASCII, GUI_FontComic24B_1;
 #if defined(__cplusplus)
 }
 #endif
-void OS_TimeMS_Inc(void);
+
 #endif   /* ifdef GUI_H */
 
 /*************************** End of file ****************************/

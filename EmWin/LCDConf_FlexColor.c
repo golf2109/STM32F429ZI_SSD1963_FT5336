@@ -53,7 +53,7 @@ Purpose     : Display controller configuration (single layer)
 
 #include "GUI.h"
 #include "GUIDRV_FlexColor.h"
-#include "LCDConf_FlexColor.h"
+
 /*********************************************************************
 *
 *       Layer configuration (to be modified)
@@ -107,7 +107,7 @@ Purpose     : Display controller configuration (single layer)
 */
 static void LcdWriteReg(U16 Data) {
   // ... TBD by user
-   *(uint16_t *) (LCD_REG) = Data;  
+	*(char *) (0x60000000) = Data;	  
 }
 
 /********************************************************************
@@ -117,9 +117,9 @@ static void LcdWriteReg(U16 Data) {
 * Function description:
 *   Writes a value to a display register
 */
-static void LcdWriteData(U16 Data) {
+static void LcdWriteData(U16 Data) {  
   // ... TBD by user
-   *(uint16_t *) (LCD_DATA)= Data;  
+	*(char *) (0x60020000) = Data;	  
 }
 
 /********************************************************************
@@ -132,8 +132,8 @@ static void LcdWriteData(U16 Data) {
 static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-   *(uint16_t *) (LCD_REG) = *pData;    
-    pData++;
+	*(char *) (0x60020000) = *pData;    
+  pData++;
   }
 }
 
@@ -147,7 +147,7 @@ static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
 static void LcdReadDataMultiple(U16 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-    *pData = *(uint16_t *) (LCD_REG);
+    *pData = *(char *) (0x60020000);
     pData++;
   }
 }
@@ -184,10 +184,6 @@ void LCD_X_Config(void) {
   // Orientation
   //
   Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;
-//Normally the display controller uses 3 bits of one register todefine the required display orientation. 
-//Normally these are thebits ID0, ID1 and AM. To be able to control the content of theother bits 
-//  the RegEntryMode combines this value with the required orientation bits during the initialization process  
-//Config.RegEntryMode = 0x0000;//0x6E30;//0x08  //!!!!!!!!!!!!  Orientation and offset of SEG/COM lines
   GUIDRV_FlexColor_Config(pDevice, &Config);
   //
   // Set controller and operation mode
@@ -196,7 +192,8 @@ void LCD_X_Config(void) {
   PortAPI.pfWrite16_A1  = LcdWriteData;
   PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
   PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
-  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66720, GUIDRV_FLEXCOLOR_M16C0B16);
+//  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66708, GUIDRV_FLEXCOLOR_M16C0B16);
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66720, GUIDRV_FLEXCOLOR_M16C0B16);  
 }
 
 /*********************************************************************
@@ -234,7 +231,6 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     // to be adapted by the customer...
     //
     // ...
-    Init_SSD1963();
     return 0;
   }
   default:

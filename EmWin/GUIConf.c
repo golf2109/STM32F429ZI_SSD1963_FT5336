@@ -27,8 +27,8 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
-File        : LCDConf_FlexColor_Template.h
-Purpose     : Display driver configuration file
+File        : GUIConf.c
+Purpose     : Display controller initialization
 ---------------------------END-OF-HEADER------------------------------
 */
 
@@ -51,11 +51,46 @@ Purpose     : Display driver configuration file
   ******************************************************************************
   */
 
-#ifndef LCDCONF_H
-#define LCDCONF_H
+#include "GUI.h"
 
-#include "display_ssd1963.h"
+/*********************************************************************
+*
+*       Defines
+*
+**********************************************************************
+*/
+//
+// Define the available number of bytes available for the GUI
+//
+#define GUI_NUMBYTES  0x20000
 
-#endif /* LCDCONF_H */
+/*********************************************************************
+*
+*       Public code
+*
+**********************************************************************
+*/
+/*********************************************************************
+*
+*       GUI_X_Config
+*
+* Purpose:
+*   Called during the initialization process in order to set up the
+*   available memory for the GUI.
+*/
+void GUI_X_Config(void) {
+  //
+  // 32 bit aligned memory area
+  //
+  static U32 aMemory[GUI_NUMBYTES / 4];
+  //
+  // Assign memory to emWin
+  //
+  GUI_ALLOC_AssignMemory(aMemory, GUI_NUMBYTES);
+  //
+  // Set default font
+  //
+  GUI_SetDefaultFont(GUI_FONT_6X8);
+}
 
 /*************************** End of file ****************************/

@@ -335,7 +335,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Src;..\Inc;..\EmWin;..\EmWin\inc;..\EmWin\src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Src;..\Inc;..\EmWin;..\EmWin\inc;..\Software</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -423,6 +423,16 @@
               <FileName>ts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ts.h</FilePath>
+            </File>
+            <File>
+              <FileName>WindowDLG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Software\WindowDLG.c</FilePath>
+            </File>
+            <File>
+              <FileName>WindowDLG.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Software\WindowDLG.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -547,17 +557,27 @@
             <File>
               <FileName>GUI_X.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\EmWin\src\GUI_X.c</FilePath>
+              <FilePath>..\EmWin\GUI_X.c</FilePath>
             </File>
             <File>
               <FileName>GUIConf.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\EmWin\src\GUIConf.c</FilePath>
+              <FilePath>..\EmWin\GUIConf.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIConf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\EmWin\GUIConf.h</FilePath>
             </File>
             <File>
               <FileName>LCDConf_FlexColor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\EmWin\src\LCDConf_FlexColor.c</FilePath>
+              <FilePath>..\EmWin\LCDConf_FlexColor.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCDConf_FlexColor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\EmWin\LCDConf_FlexColor.h</FilePath>
             </File>
             <File>
               <FileName>STemWin532_CM4_Keil.lib</FileName>

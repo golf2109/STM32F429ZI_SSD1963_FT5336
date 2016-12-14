@@ -34,12 +34,12 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_it.h"
-#include "GUI.h"
 
 /* USER CODE BEGIN 0 */
 extern uint8_t MasterTX[5];
 extern uint16_t touch_adr;
 extern uint8_t touch_receive[0x32];
+extern volatile uint32_t OS_TimeMS;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -176,7 +176,7 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   HAL_SYSTICK_IRQHandler();
-  OS_TimeMS_Inc();
+  OS_TimeMS++;
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */

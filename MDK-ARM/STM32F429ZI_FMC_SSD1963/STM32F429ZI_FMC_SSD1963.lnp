@@ -5,6 +5,7 @@
 "stm32f429zi_fmc_ssd1963\display_ssd1963.o"
 "stm32f429zi_fmc_ssd1963\font8x8.o"
 "stm32f429zi_fmc_ssd1963\touch.o"
+"stm32f429zi_fmc_ssd1963\windowdlg.o"
 "stm32f429zi_fmc_ssd1963\startup_stm32f429xx.o"
 "stm32f429zi_fmc_ssd1963\stm32f4xx_hal_pwr.o"
 "stm32f429zi_fmc_ssd1963\stm32f4xx_hal_sram.o"
